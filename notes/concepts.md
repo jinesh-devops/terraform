@@ -49,3 +49,54 @@ provider "aws" {
 - Install AWS CLI → aws configure
 - Provide: Access Key, Secret Key, Region, Output format
 - Terraform uses these credentials automatically via provider
+
+## State, Lifecycle and Formatting
+
+### State File (terraform.tfstate)
+- Tracks everything Terraform has deployed in real cloud
+- Created on first terraform apply
+- Every apply/destroy updates the state file
+- Never edit manually — always use terraform commands
+- Never push to GitHub — keep in .gitignore
+
+### terraform state commands
+terraform state list                          # shows all tracked resources
+terraform state show <resource_address>       # details of a specific resource
+Example: terraform state show aws_instance.ec2_instance
+
+### Lifecycle Block
+- Special block inside a resource to control behavior
+- 3 options available:
+  1. prevent_destroy    → blocks accidental deletion
+  2. create_before_destroy → creates new before deleting old
+  3. ignore_changes     → ignore drift on specific attributes
+
+### prevent_destroy Example
+lifecycle {
+  prevent_destroy = true
+}
+- If you run terraform destroy → Terraform throws an error
+- Useful for protecting databases, critical instances
+
+### -target Flag
+- Destroy or apply only ONE specific resource
+- Useful when you have multiple resources and want to touch only one
+
+terraform destroy -target aws_instance.ec2_instance
+terraform apply  -target aws_instance.ec2_instance
+
+### terraform fmt
+- Formats .tf files to standard HCL style
+- Fixes indentation, spacing — does NOT change logic
+
+terraform fmt              → format current folder
+terraform fmt -recursive   → format all subfolders
+terraform fmt -diff        → show what lines were changed
+
+### terraform validate
+- Checks syntax and internal consistency of .tf files
+- Catches errors before you run plan or apply
+- Does NOT connect to AWS — purely local check
+- Always run validate before plan
+
+
