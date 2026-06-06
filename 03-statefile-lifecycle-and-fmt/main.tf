@@ -9,6 +9,6 @@ resource "aws_instance" "ec2_instance" {
     Name = "Terraform EC2 Instance" # Name Tag for the EC2 instance
   }
   lifecycle {
-    prevent_destroy = true # Prevents the resource from being destroyed, Throws Error
+    prevent_destroy = true # Prevents the resource from being destroyed,  terraform destroy will throw error
   }
 }
